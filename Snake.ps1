@@ -1,4 +1,4 @@
-# Simple Snake Game in PowerShell
+# Simple Snake Game in PowerShell with Reduced Flickering
 
 $Width = 20
 $Height = 10
@@ -9,7 +9,12 @@ $Score = 0
 $GameOver = $false
 
 function Clear-Console {
-    Clear-Host
+    [System.Console]::Clear()
+}
+
+function Draw-Char($x, $y, $char) {
+    [System.Console]::SetCursorPosition($x, $y)
+    Write-Host -NoNewline $char
 }
 
 function Draw-Game {
@@ -17,17 +22,14 @@ function Draw-Game {
     for ($y = 0; $y -lt $Height; $y++) {
         for ($x = 0; $x -lt $Width; $x++) {
             if ($Snake -contains ($x, $y)) {
-                Write-Host -NoNewline "O"
+                Draw-Char $x $y "O"
             }
             elseif ($Food.ContainsKey("$x,$y")) {
-                Write-Host -NoNewline "*"
-            }
-            else {
-                Write-Host -NoNewline " "
+                Draw-Char $x $y "*"
             }
         }
-        Write-Host ""
     }
+    [System.Console]::SetCursorPosition(0, $Height)
     Write-Host "Score: $Score"
 }
 
@@ -92,7 +94,7 @@ while (-not $GameOver) {
             }
         }
     }
-    
+
     Update-Snake
     Draw-Game
     Start-Sleep -Milliseconds 100
